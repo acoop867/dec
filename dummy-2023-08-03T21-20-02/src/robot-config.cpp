@@ -11,10 +11,10 @@ brain  Brain;
 motor l1 = motor(PORT11, ratio6_1, false);
 motor l2 = motor(PORT12, ratio6_1, true);
 motor l3 = motor(PORT13, ratio6_1, true);
-motor r1 = motor(PORT10, ratio6_1, false);
-motor r2 = motor(PORT19, ratio6_1, true);
+motor r1 = motor(PORT18, ratio6_1, false);
+motor r2 = motor(PORT19, ratio6_1, false);
 motor r3 = motor(PORT20, ratio6_1, true);
-inertial Inertial4 = inertial(PORT10);
+inertial inert = inertial(PORT14);
 rotation lr = rotation(PORT11, false);
 rotation rr = rotation(PORT21, true);
 controller Controller1 = controller(primary);
@@ -22,8 +22,8 @@ motor Intake = motor(PORT7, ratio18_1, false);
 motor cata = motor(PORT10, ratio18_1, false);
 limit LimitSwitchA = limit(Brain.ThreeWirePort.A);
 digital_out arms = digital_out(Brain.ThreeWirePort.F);
-digital_out wingR = digital_out(Brain.ThreeWirePort.E);
-digital_out wingL = digital_out(Brain.ThreeWirePort.G);
+digital_out wingR = digital_out(Brain.ThreeWirePort.G);
+digital_out wingL = digital_out(Brain.ThreeWirePort.D);
 
 line lines = line(Brain.ThreeWirePort.E);
 

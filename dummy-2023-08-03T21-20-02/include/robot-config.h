@@ -9,7 +9,7 @@ extern motor l3;
 extern motor r1;
 extern motor r2;
 extern motor r3;
-extern inertial Inertial4;
+extern inertial inert;
 extern rotation lr;
 extern rotation rr;
 extern controller Controller1;
