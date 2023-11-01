@@ -39,8 +39,12 @@ void reset() {
 }
 
 
-
-
+int li(){
+  return (l1.rotation(degrees)+l2.rotation(degrees)+l3.rotation(degrees))/3;
+}
+int ri(){
+  return (r1.rotation(degrees)+r2.rotation(degrees)+r3.rotation(degrees))/3;
+}
 
 
 void sl(int speed) {
@@ -75,26 +79,111 @@ void wings(int i) {
 
 }
 
-void pid(int angle) {
-  float p = angle;
+void pid(int ang) {
+  float p = ang;
   float i = 0;
-  float d = angle;
+  float d = ang;
 
-  float kp = .1;
-  float kd=0;
-  while(fabs(p)>1) {
+  float kp = .3;
+  float kd=0.05;
+  while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
     float prev = p;
-    p=angle-inert.rotation();
-    d=prev-p;
+    p=ang-inert.rotation();
+    d=p-prev;
 
     sl(p*kp+d*kd);
     sr(-p*kp+-d*kd);
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1,1);
+    Controller1.Screen.print(inert.rotation());
+    wait(10,msec);
+  }
+  sl(0);
+  sr(0);
+}
+
+void pidswingr(int ang) {
+  float p = ang;
+  float i = 0;
+  float d = ang;
+
+  float kp = .68;
+  float kd=0.05;
+  while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+    float prev = p;
+    p=ang-inert.rotation();
+    d=p-prev;
+
+    //sl(p*kp+d*kd);
+    sr(-p*kp+-d*kd);
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1,1);
+    Controller1.Screen.print(inert.rotation());
+    wait(10,msec);
+  }
+  pid(ang);
+  sl(0);
+  sr(0);
+}
+
+void pidswingl(int ang) {
+  float p = ang;
+  float i = 0;
+  float d = ang;
+
+  float kp = .68;
+  float kd=0.05;
+  while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+    float prev = p;
+    p=ang-inert.rotation();
+    d=p-prev;
+
+    sl(p*kp+d*kd);
+    //sr(-p*kp+-d*kd);
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1,1);
+    Controller1.Screen.print(inert.rotation());
+    wait(10,msec);
+  }
+  pid(ang);
+  sl(0);
+  sr(0);
+}
+
+void pidd(int dist, int ang) {
+l1.resetRotation();
+l2.resetRotation();
+l3.resetRotation();
+r1.resetRotation();
+r2.resetRotation();
+r3.resetRotation();
+double kp=0.1;
+double kd = 0.05;
+//dist=dist*4*3.25*3.14159/(5*360);
+float p = dist;
+float d=dist;
+
+double kap = .03;
+
+while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+    float prev = p;
+    p=dist-(li()+ri())/2;
+    d=p-prev;
+
+    float ap = ang-inert.rotation();
+
+    sl(p*kp+d*kd+ap*kap);
+    sr(p*kp+d*kd-ap*kap);
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1,1);
     Controller1.Screen.print(p);
     wait(10,msec);
   }
+  sl(0);
+  sr(0);
 }
+
+
 
 int catathing(){
   while(true) {
@@ -206,12 +295,17 @@ competition Comp;
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
   // Comp.autonomous(auton);
-   Comp.drivercontrol(driver);
+   //Comp.drivercontrol(driver);
 
   // pre();
+  inert.calibrate();
+  wait(3,sec);
+  pidd(-1500,0);
+  pidswingl(-50);
+  pidd(-700,-45);
+  pidswingl(-90);
+  pidd(-400,-90);
 
-  
-  
   while(1){
     wait(100,msec);
     
