@@ -157,7 +157,9 @@ l3.resetRotation();
 r1.resetRotation();
 r2.resetRotation();
 r3.resetRotation();
-double kp=0.1;
+double kp=.1;
+
+
 double kd = 0.05;
 //dist=dist*4*3.25*3.14159/(5*360);
 float p = dist;
@@ -176,7 +178,7 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
     sr(p*kp+d*kd-ap*kap);
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print(p);
+    Controller1.Screen.print(kp);
     wait(10,msec);
   }
   sl(0);
@@ -289,22 +291,60 @@ void driver() {
     
   }
 }
+void pre() {
+  inert.calibrate();
+}
+
+void db(int degs){
+  double ang= inert.rotation();
+  l1.resetRotation();
+  l2.resetRotation();
+  l3.resetRotation();
+  r1.resetRotation();
+  r2.resetRotation();
+  r3.resetRotation();
+  
+  while(li()+ri()>-degs*2) {
+    float ap = ang-inert.rotation();
+    sl(-70+ap*.05);
+    sr(-70-ap*.05);
+    wait(20,msec);
+  }
+  sl(0);
+  sr(0);
+}
+
+void auton() {
+  pidd(-1400,0);
+  pidswingl(-50);
+  pidd(-500,-45);
+  pidswingl(-90);
+  
+  pid(90);
+  pidd(400,90);
+  pidd(-500,90);
+  pid(25);
+  pidd(2200,25);
+  pidd(-300,25);
+  pid(160);
+  pid(65);
+  pidd(1100,65);
+  pid(180);
+  pidd(1500,180);
+}
+
 
 
 competition Comp;
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-  // Comp.autonomous(auton);
-   //Comp.drivercontrol(driver);
+   Comp.autonomous(auton);
+   Comp.drivercontrol(driver);
 
-  // pre();
-  inert.calibrate();
-  wait(3,sec);
-  pidd(-1500,0);
-  pidswingl(-50);
-  pidd(-700,-45);
-  pidswingl(-90);
-  pidd(-400,-90);
+  pre();
+  
+  
+  
 
   while(1){
     wait(100,msec);
