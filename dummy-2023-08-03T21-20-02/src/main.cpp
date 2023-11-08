@@ -80,12 +80,17 @@ void wings(int i) {
 }
 
 void pid(int ang) {
-  float p = ang;
+  float p = ang-inert.rotation();
   float i = 0;
   float d = ang;
-
-  float kp = .3;
-  float kd=0.05;
+  float kp;
+  if(fabs(p)<91){
+  kp = .38;
+  }
+  else{
+  kp = .33;
+  }
+  float kd=0.1;
   while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
     float prev = p;
     p=ang-inert.rotation();
@@ -107,7 +112,7 @@ void pidswingr(int ang) {
   float i = 0;
   float d = ang;
 
-  float kp = .68;
+  float kp = .6;
   float kd=0.05;
   while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
     float prev = p;
@@ -121,7 +126,7 @@ void pidswingr(int ang) {
     Controller1.Screen.print(inert.rotation());
     wait(10,msec);
   }
-  pid(ang);
+  
   sl(0);
   sr(0);
 }
@@ -131,7 +136,7 @@ void pidswingl(int ang) {
   float i = 0;
   float d = ang;
 
-  float kp = .68;
+  float kp = .6;
   float kd=0.05;
   while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
     float prev = p;
@@ -157,7 +162,7 @@ l3.resetRotation();
 r1.resetRotation();
 r2.resetRotation();
 r3.resetRotation();
-double kp=.1;
+double kp=.09;
 
 
 double kd = 0.05;
@@ -314,7 +319,7 @@ void db(int degs){
   sr(0);
 }
 
-void auton() {
+void auton1() {
   pidd(-1400,0);
   pidswingl(-50);
   pidd(-500,-45);
@@ -333,7 +338,32 @@ void auton() {
   pidd(1500,180);
 }
 
+void auton2() {
+  pidswingl(35);
+  pidd(1950,35);
+  pidswingr(90);
+  pidd(800,90);
+  pidswingl(45);
+  pidd(-1800,45);
+  pidswingl(-45);
+  pidd(-300,-45);
+  pidswingl(-90);
+  pidswingl(-45);
+  pidd(800,-45);
+  pidswingl(0);
+  pidd(400,0);
+  pidswingl(-80);
+  pidd(-1600,-80);
+}
 
+void auton() {
+  pidswingr(160);
+  wait(.5,sec);
+  pid(15);
+  pidd(700,10);
+  pid(0);
+  pidd(3000,0);
+}
 
 competition Comp;
 int main() {
