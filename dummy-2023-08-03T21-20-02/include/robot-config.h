@@ -10,7 +10,7 @@ extern motor r1;
 extern motor r2;
 extern motor r3;
 extern inertial inert;
-extern rotation lr;
+extern distance di;
 extern rotation rr;
 extern controller Controller1;
 extern motor Intake;
@@ -19,7 +19,7 @@ extern limit LimitSwitchA;
 extern digital_out arms;
 extern digital_out wingR;
 extern digital_out wingL;
-extern digital_out lift;
+extern digital_out pto;
 extern line lines;
 
 /**

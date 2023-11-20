@@ -15,16 +15,17 @@ motor r1 = motor(PORT15, ratio6_1, false);
 motor r2 = motor(PORT12, ratio6_1, false);
 motor r3 = motor(PORT3, ratio6_1, true);
 inertial inert = inertial(PORT10);
-rotation lr = rotation(PORT11, false);
-rotation rr = rotation(PORT21, true);
+
+rotation rr = rotation(PORT17, true);
 controller Controller1 = controller(primary);
 motor Intake = motor(PORT7, ratio18_1, false);
-motor cata = motor(PORT10, ratio18_1, false);
+motor cata = motor(PORT1, ratio18_1, false);
 limit LimitSwitchA = limit(Brain.ThreeWirePort.A);
 digital_out arms = digital_out(Brain.ThreeWirePort.F);
-digital_out wingR = digital_out(Brain.ThreeWirePort.G);
-digital_out wingL = digital_out(Brain.ThreeWirePort.D);
-
+digital_out wingR = digital_out(Brain.ThreeWirePort.D);
+digital_out wingL = digital_out(Brain.ThreeWirePort.B);
+digital_out pto = digital_out(Brain.ThreeWirePort.A);
+distance di = distance(PORT2);
 line lines = line(Brain.ThreeWirePort.E);
 
 // VEXcode generated functions
