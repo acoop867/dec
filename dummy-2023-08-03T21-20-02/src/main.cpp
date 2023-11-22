@@ -57,7 +57,14 @@ void sr(int speed) {
   r2.spin(forward,speed,pct);
   r3.spin(forward,speed,pct);
 }
-
+void sl1(int speed) {
+  l2.spin(forward,speed,pct);
+  l3.spin(forward,speed,pct);
+}
+void sr1(int speed) {
+  r1.spin(forward,speed,pct);
+  r2.spin(forward,speed,pct);
+}
 
 void wings(int i) {
   if(i==1) {
@@ -215,12 +222,48 @@ void driver() {
   bool r = false;
   bool rr = false;
   bool lr = false;
+  int toggle = 0;
   while(true) {
+    if(Controller1.ButtonX.pressing()) {
+      toggle =0;
+      pto.set(false);
+    }
+    if(Controller1.ButtonUp.pressing()) {
+      toggle =1;
+      pto.set(true);
+    }
+    if(Controller1.ButtonDown.pressing()) {
+      toggle =2;
+      pto.set(true);
+    }
+    if(toggle ==0) {
     sl(Controller1.Axis3.position()+Controller1.Axis1.position());
     sr(Controller1.Axis3.position()-Controller1.Axis1.position());
-
-
-    
+    }
+    else if (toggle == 1) {
+      if(Controller1.ButtonUp.pressing()) {
+      l1.spin(reverse,100,pct);
+      r3.spin(reverse,100,pct);
+      }
+      else{
+        r3.stop(hold);
+        l1.stop(hold);
+      }
+      sl1(Controller1.Axis3.position()+Controller1.Axis1.position());
+      sr1(Controller1.Axis3.position()-Controller1.Axis1.position());
+    }
+    else if (toggle == 2) {
+      if(Controller1.ButtonDown.pressing()) {
+      l1.spin(forward,100,pct);
+      r3.spin(forward,100,pct);
+      }
+      else{
+        r3.stop(hold);
+        l1.stop(hold);
+      }
+      sl1(Controller1.Axis3.position()+Controller1.Axis1.position());
+      sr1(Controller1.Axis3.position()-Controller1.Axis1.position());
+    }
 
 
     

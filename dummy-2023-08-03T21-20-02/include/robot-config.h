@@ -11,7 +11,7 @@ extern motor r2;
 extern motor r3;
 extern inertial inert;
 extern distance di;
-extern rotation rr;
+extern rotation rra;
 extern controller Controller1;
 extern motor Intake;
 extern motor cata;
