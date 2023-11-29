@@ -40,10 +40,10 @@ void reset() {
 
 
 int li(){
-  return (l1.rotation(degrees)+l2.rotation(degrees)+l3.rotation(degrees))/3;
+  return (l1.position(degrees)+l2.position(degrees)+l3.position(degrees))/3;
 }
 int ri(){
-  return (r1.rotation(degrees)+r2.rotation(degrees)+r3.rotation(degrees))/3;
+  return (r1.position(degrees)+r2.position(degrees)+r3.position(degrees))/3;
 }
 
 
@@ -163,12 +163,12 @@ void pidswingl(int ang) {
 }
 
 void pidd(int dist, int ang) {
-l1.resetRotation();
-l2.resetRotation();
-l3.resetRotation();
-r1.resetRotation();
-r2.resetRotation();
-r3.resetRotation();
+  l1.resetPosition();
+  l2.resetPosition();
+  l3.resetPosition();
+  r1.resetPosition();
+  r2.resetPosition();
+  r3.resetPosition();
 double kp=.09;
 
 
@@ -202,12 +202,22 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
 int catathing(){
   while(true) {
     
-    if(Controller1.ButtonL2.pressing()) {
+    if(cata.torque()>.1) {
+      cata.setPosition(0, deg);
+      cata.spin(forward,100,pct);
+      while(cata.position(deg)<400) {
+        wait(10,msec);
+      }
+      if(di.objectDistance(inches)>2) {
+      cata.stop();
+      waitUntil(di.objectDistance(inches)<2);
+      }
       cata.spin(forward,100,pct);
     }
     else{
-      cata.stop();
+      cata.spin(forward,100,pct);
     }
+    
   }
   return 0;
 }
@@ -237,23 +247,19 @@ void driver() {
       pto.set(true);
     }
     if(toggle ==0) {
-    sl(Controller1.Axis3.position()+Controller1.Axis1.position());
-    sr(Controller1.Axis3.position()-Controller1.Axis1.position());
+    l1.setBrake(coast);
+    r3.setBrake(coast);
+    l1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
+    l2.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
+    l3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
+    r1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
+    r2.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
+    r3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
+    // sl(Controller1.Axis3.position()+Controller1.Axis1.position());
+    // sr(Controller1.Axis3.position()-Controller1.Axis1.position());
     }
     else if (toggle == 1) {
       if(Controller1.ButtonUp.pressing()) {
-      l1.spin(reverse,100,pct);
-      r3.spin(reverse,100,pct);
-      }
-      else{
-        r3.stop(hold);
-        l1.stop(hold);
-      }
-      sl1(Controller1.Axis3.position()+Controller1.Axis1.position());
-      sr1(Controller1.Axis3.position()-Controller1.Axis1.position());
-    }
-    else if (toggle == 2) {
-      if(Controller1.ButtonDown.pressing()) {
       l1.spin(forward,100,pct);
       r3.spin(forward,100,pct);
       }
@@ -261,10 +267,25 @@ void driver() {
         r3.stop(hold);
         l1.stop(hold);
       }
-      sl1(Controller1.Axis3.position()+Controller1.Axis1.position());
-      sr1(Controller1.Axis3.position()-Controller1.Axis1.position());
+      l2.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
+    l3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
+    r1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
+    r2.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
     }
-
+    else if (toggle == 2) {
+      if(Controller1.ButtonDown.pressing()) {
+      l1.spin(reverse,60,pct);
+      r3.spin(reverse,60,pct);
+      }
+      else{
+        r3.stop(hold);
+        l1.stop(hold);
+      }
+      l2.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
+    l3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
+    r1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
+    r2.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
+    }
 
     
     if(Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()) {
@@ -348,12 +369,12 @@ void pre() {
 
 void db(int degs){
   double ang= inert.rotation();
-  l1.resetRotation();
-  l2.resetRotation();
-  l3.resetRotation();
-  r1.resetRotation();
-  r2.resetRotation();
-  r3.resetRotation();
+  l1.resetPosition();
+  l2.resetPosition();
+  l3.resetPosition();
+  r1.resetPosition();
+  r2.resetPosition();
+  r3.resetPosition();
   
   while(li()+ri()>-degs*2) {
     float ap = ang-inert.rotation();
