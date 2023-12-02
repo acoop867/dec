@@ -235,6 +235,10 @@ void driver() {
   int toggle = 0;
   while(true) {
     if(Controller1.ButtonX.pressing()) {
+      toggle =1;
+      pto.set(true);
+    }
+    if(Controller1.ButtonB.pressing()) {
       toggle =0;
       pto.set(false);
     }
@@ -288,14 +292,14 @@ void driver() {
     }
 
     
-    if(Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()) {
+    if(Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()&&toggle==0) {
       Intake.spin(forward,100,pct);
     }
-    else if(Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()) {
+    else if(Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()&&toggle==0) {
       Intake.spin(reverse,100,pct);
     }
     else{
-      Intake.stop();
+      Intake.stop(hold);
     }
 
     if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()) {
