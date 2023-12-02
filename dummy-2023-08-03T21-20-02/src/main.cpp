@@ -246,10 +246,7 @@ void driver() {
       toggle =1;
       pto.set(true);
     }
-    if(Controller1.ButtonDown.pressing()) {
-      toggle =2;
-      pto.set(true);
-    }
+    
     if(toggle ==0) {
     l1.setBrake(coast);
     r3.setBrake(coast);
@@ -263,21 +260,11 @@ void driver() {
     // sr(Controller1.Axis3.position()-Controller1.Axis1.position());
     }
     else if (toggle == 1) {
-      if(Controller1.ButtonUp.pressing()) {
+      if(Controller1.ButtonUp.pressing()||Controller1.ButtonR1.pressing()) {
       l1.spin(forward,100,pct);
       r3.spin(forward,100,pct);
       }
-      else{
-        r3.stop(hold);
-        l1.stop(hold);
-      }
-      l2.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
-    l3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
-    r1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
-    r2.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
-    }
-    else if (toggle == 2) {
-      if(Controller1.ButtonDown.pressing()) {
+      else if(Controller1.ButtonDown.pressing()||Controller1.ButtonL1.pressing()) {
       l1.spin(reverse,60,pct);
       r3.spin(reverse,60,pct);
       }
@@ -289,6 +276,11 @@ void driver() {
     l3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
     r1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
     r2.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
+    
+    
+      
+      
+      
     }
 
     
