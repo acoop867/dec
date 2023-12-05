@@ -88,23 +88,30 @@ void wings(int i) {
 
 void pid(int ang) {
   float p = ang-inert.rotation();
-  float i = 0;
+  float i = 0.000001;
   float d = ang;
   float kp;
   if(fabs(p)<91){
-  kp = .38;
+  kp = .299;
   }
   else{
-  kp = .33;
+  kp = 0.29;
   }
-  float kd=0.1;
-  while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+  float kd=.17;
+  while((fabs(d)>.3||fabs(p)>5)&&fabs(p)>.5) {
     float prev = p;
     p=ang-inert.rotation();
     d=p-prev;
 
-    sl(p*kp+d*kd);
-    sr(-p*kp+-d*kd);
+    l1.spin(reverse,p*kp+d*kd,pct);
+    l2.spin(forward,p*kp+d*kd,pct);
+    l3.spin(forward,p*kp+d*kd,pct);
+    r1.spin(reverse,p*kp+d*kd,pct);
+    r2.spin(reverse,p*kp+d*kd,pct);
+    r3.spin(forward,p*kp+d*kd,pct);
+
+    //sl(p*kp+d*kd);
+    //sr(-p*kp+-d*kd);
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1,1);
     Controller1.Screen.print(inert.rotation());
@@ -112,6 +119,12 @@ void pid(int ang) {
   }
   sl(0);
   sr(0);
+}
+
+void intout() {
+  Intake.spin(reverse,100,pct);
+  wait(1,sec);
+  Intake.stop();
 }
 
 void pidswingr(int ang) {
@@ -197,12 +210,47 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
   sr(0);
 }
 
+void arc(int dist, int ang) {
+  l1.resetPosition();
+  l2.resetPosition();
+  l3.resetPosition();
+  r1.resetPosition();
+  r2.resetPosition();
+  r3.resetPosition();
+double kp=.09;
 
+
+double kd = 0.05;
+//dist=dist*4*3.25*3.14159/(5*360);
+float p = dist;
+float d=dist;
+
+double kap = 2;
+
+while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+    float prev = p;
+    p=dist-(li()+ri())/2;
+    d=p-prev;
+
+    float ap = ang-inert.rotation();
+
+    sl(p*kp+d*kd+ap*kap);
+    sr(p*kp+d*kd-ap*kap);
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1,1);
+    Controller1.Screen.print(kp);
+    wait(10,msec);
+  }
+  sl(0);
+  sr(0);
+}
 
 int catathing(){
   while(true) {
-    
-    if(cata.torque()>.1) {
+    if(Controller1.ButtonL2.pressing()) {
+      cata.spin(forward,13,volt);
+    }
+    /*if(cata.torque()>.1) {
       cata.setPosition(0, deg);
       cata.spin(forward,100,pct);
       while(cata.position(deg)<400) {
@@ -217,7 +265,7 @@ int catathing(){
     else{
       cata.spin(forward,100,pct);
     }
-    
+    */
   }
   return 0;
 }
@@ -359,6 +407,13 @@ void driver() {
     
   }
 }
+
+void intin(){
+  Intake.spin(forward,100,pct);
+}
+void intstop() {
+  Intake.stop();
+}
 void pre() {
   inert.calibrate();
 }
@@ -419,13 +474,27 @@ void auton2() {
   pidd(-1600,-80);
 }
 
-void auton() {
+void auton4() {
   pidswingr(160);
   wait(.5,sec);
   pid(15);
   pidd(700,10);
   pid(0);
   pidd(3000,0);
+}
+
+void auton(){
+  arc(1500,-45);
+  pid(60);
+  intout();
+  pidd(300,60);
+  pid(-90);
+  intin();
+  pidd(800,-90);
+  intstop();
+  pid(80);
+  intout();
+  pidd(500,80);
 }
 
 competition Comp;
