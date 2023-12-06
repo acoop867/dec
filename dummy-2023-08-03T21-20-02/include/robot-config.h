@@ -19,6 +19,9 @@ extern limit LimitSwitchA;
 extern digital_out arms;
 extern digital_out wingR;
 extern digital_out wingL;
+extern digital_out bwingR;
+extern digital_out bwingL;
+extern digital_out endgame;
 extern digital_out pto;
 extern line lines;
 

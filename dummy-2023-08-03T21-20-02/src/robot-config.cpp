@@ -20,13 +20,15 @@ rotation rra = rotation(PORT17, true);
 controller Controller1 = controller(primary);
 motor Intake = motor(PORT21, ratio18_1, false);
 motor cata = motor(PORT1, ratio18_1, false);
-limit LimitSwitchA = limit(Brain.ThreeWirePort.A);
-digital_out arms = digital_out(Brain.ThreeWirePort.F);
+
 digital_out wingR = digital_out(Brain.ThreeWirePort.D);
 digital_out wingL = digital_out(Brain.ThreeWirePort.B);
+digital_out bwingR = digital_out(Brain.ThreeWirePort.F);
+digital_out bwingL = digital_out(Brain.ThreeWirePort.G);
+digital_out endgame = digital_out(Brain.ThreeWirePort.E);
 digital_out pto = digital_out(Brain.ThreeWirePort.A);
 distance di = distance(PORT2);
-line lines = line(Brain.ThreeWirePort.E);
+
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

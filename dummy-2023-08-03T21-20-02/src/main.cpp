@@ -163,7 +163,9 @@ void pidswingl(int ang) {
     p=ang-inert.rotation();
     d=p-prev;
 
-    sl(p*kp+d*kd);
+    l1.spin(reverse,p*kp+d*kd,pct);
+    l2.spin(forward,p*kp+d*kd,pct);
+    l3.spin(forward,p*kp+d*kd,pct);
     //sr(-p*kp+-d*kd);
     Controller1.Screen.clearScreen();
     Controller1.Screen.setCursor(1,1);
@@ -182,10 +184,10 @@ void pidd(int dist, int ang) {
   r1.resetPosition();
   r2.resetPosition();
   r3.resetPosition();
-double kp=.09;
+double kp=.08;
 
 
-double kd = 0.05;
+double kd = 0.11;
 //dist=dist*4*3.25*3.14159/(5*360);
 float p = dist;
 float d=dist;
@@ -248,7 +250,10 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
 int catathing(){
   while(true) {
     if(Controller1.ButtonL2.pressing()) {
-      cata.spin(forward,13,volt);
+      cata.spin(forward,12,volt);
+    }
+    else {
+    cata.stop();
     }
     /*if(cata.torque()>.1) {
       cata.setPosition(0, deg);
@@ -280,6 +285,7 @@ void driver() {
   bool r = false;
   bool rr = false;
   bool lr = false;
+  bool inta = false;
   int toggle = 0;
   while(true) {
     if(Controller1.ButtonX.pressing()) {
@@ -290,9 +296,10 @@ void driver() {
       toggle =0;
       pto.set(false);
     }
-    if(Controller1.ButtonUp.pressing()) {
+    if(Controller1.ButtonDown.pressing()&&Controller1.ButtonLeft.pressing()) {
       toggle =1;
       pto.set(true);
+      endgame.set(true);
     }
     
     if(toggle ==0) {
@@ -306,13 +313,14 @@ void driver() {
     r3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
     // sl(Controller1.Axis3.position()+Controller1.Axis1.position());
     // sr(Controller1.Axis3.position()-Controller1.Axis1.position());
+    
     }
     else if (toggle == 1) {
-      if(Controller1.ButtonUp.pressing()||Controller1.ButtonR1.pressing()) {
+      if(Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()) {
       l1.spin(forward,100,pct);
       r3.spin(forward,100,pct);
       }
-      else if(Controller1.ButtonDown.pressing()||Controller1.ButtonL1.pressing()) {
+      else if(Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()) {
       l1.spin(reverse,60,pct);
       r3.spin(reverse,60,pct);
       }
@@ -320,6 +328,7 @@ void driver() {
         r3.stop(hold);
         l1.stop(hold);
       }
+      
       l2.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
     l3.spin(forward,Controller1.Axis3.position()+Controller1.Axis1.position(),pct);
     r1.spin(forward,Controller1.Axis3.position()-Controller1.Axis1.position(),pct);
@@ -331,6 +340,14 @@ void driver() {
       
     }
 
+    if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()&&inta==false) {
+        bwingL.set(!bwingL.value());
+        bwingR.set(!bwingL.value());
+        inta=true;
+      }
+      else if(!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()){
+        inta=false;
+      }
     
     if(Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()&&toggle==0) {
       Intake.spin(forward,100,pct);
@@ -349,7 +366,7 @@ void driver() {
       else if(!n&&!z) {
         n=true;
       }
-      arms.set(n);
+      //arms.set(n);
       z=true;
     }
     if(!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()) {
@@ -410,6 +427,9 @@ void driver() {
 
 void intin(){
   Intake.spin(forward,100,pct);
+}
+void inout() {
+  Intake.spin(reverse,100,pct);
 }
 void intstop() {
   Intake.stop();
@@ -483,18 +503,42 @@ void auton4() {
   pidd(3000,0);
 }
 
-void auton(){
-  arc(1500,-45);
-  pid(60);
-  intout();
-  pidd(300,60);
+void aut2(){
+  pidd(1500,0);
+  pid(90);
+  inout();
+  
   pid(-90);
   intin();
-  pidd(800,-90);
+  pidd(1000,-90);
   intstop();
   pid(80);
-  intout();
-  pidd(500,80);
+  inout();
+  pidd(1000,80);
+  intstop();
+  pidd(-1000,80);
+  pid(-30);
+  intin();
+  pidd(500,-30);
+  wingR.set(true);
+  wingL.set(true);
+  pid(90);
+}
+
+void auton() {
+  intin();
+  pidd(80,0);
+  pidd(-1500,0);
+  intstop();
+  pidswingl(-45);
+  bwingR.set(true);
+  pidd(-600,-45);
+  bwingR.set(false);
+  pidswingl(-90);
+  pidd(-600,-90);
+  pid(90);
+  inout();
+  pidd(300,90);
 }
 
 competition Comp;
@@ -504,6 +548,7 @@ int main() {
    Comp.drivercontrol(driver);
 
   pre();
+  
   
   
   
