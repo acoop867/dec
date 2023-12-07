@@ -112,9 +112,9 @@ void pid(int ang) {
 
     //sl(p*kp+d*kd);
     //sr(-p*kp+-d*kd);
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print(inert.rotation());
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(inert.rotation());
     wait(10,msec);
   }
   sl(0);
@@ -141,9 +141,9 @@ void pidswingr(int ang) {
 
     //sl(p*kp+d*kd);
     sr(-p*kp+-d*kd);
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print(inert.rotation());
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(inert.rotation());
     wait(10,msec);
   }
   
@@ -167,9 +167,9 @@ void pidswingl(int ang) {
     l2.spin(forward,p*kp+d*kd,pct);
     l3.spin(forward,p*kp+d*kd,pct);
     //sr(-p*kp+-d*kd);
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print(inert.rotation());
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(inert.rotation());
     wait(10,msec);
   }
   pid(ang);
@@ -203,9 +203,50 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
 
     sl(p*kp+d*kd+ap*kap);
     sr(p*kp+d*kd-ap*kap);
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print(kp);
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(kp);
+    wait(10,msec);
+  }
+  sl(0);
+  sr(0);
+}
+
+void pidd(int dist, int ang,int max) {
+  l1.resetPosition();
+  l2.resetPosition();
+  l3.resetPosition();
+  r1.resetPosition();
+  r2.resetPosition();
+  r3.resetPosition();
+double kp=.08;
+
+
+double kd = 0.11;
+//dist=dist*4*3.25*3.14159/(5*360);
+float p = dist;
+float d=dist;
+
+double kap = .03;
+
+while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+    float prev = p;
+    p=dist-(li()+ri())/2;
+    d=p-prev;
+
+    float ap = ang-inert.rotation();
+    int pow = p*kp+d*kd;
+    if(pow>max) {
+      pow=max;
+    }
+    if(pow<-max) {
+      pow = -max;
+    }
+    sl(pow+ap*kap);
+    sr(pow-ap*kap);
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(kp);
     wait(10,msec);
   }
   sl(0);
@@ -238,9 +279,9 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
 
     sl(p*kp+d*kd+ap*kap);
     sr(p*kp+d*kd-ap*kap);
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1,1);
-    Controller1.Screen.print(kp);
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(kp);
     wait(10,msec);
   }
   sl(0);
@@ -431,11 +472,45 @@ void intin(){
 void inout() {
   Intake.spin(reverse,100,pct);
 }
+int distin() {
+  while(li()<200){
+    wait(10,msec);
+  }
+  intout();
+  return 0;
+}
 void intstop() {
   Intake.stop();
 }
+competition Comp;
+int select=1;
 void pre() {
   inert.calibrate();
+  while(!Comp.isAutonomous()) {
+    
+  if(Brain.Screen.pressing()) {
+    while(Brain.Screen.pressing()){
+    
+    wait(10,msec);
+  }
+  select++;
+  if(select>3) {
+    select=1;
+  }
+
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+  if(select == 1) {
+    Brain.Screen.print("Defense awp");
+  }
+  if(select == 2) {
+    Brain.Screen.print("Defense Elims");
+  }
+  if(select == 3) {
+    Brain.Screen.print("Offense");
+  }
+  }
+  }
 }
 
 void db(int degs){
@@ -525,7 +600,7 @@ void aut2(){
   pid(90);
 }
 
-void auton() {
+void autonoffense() {
   intin();
   pidd(80,0);
   pidd(-1500,0);
@@ -541,7 +616,43 @@ void auton() {
   pidd(300,90);
 }
 
-competition Comp;
+void autond1() {
+  thread t(distin);
+  pidd(400,0);
+  bwingR.set(true);
+  pidd(-200,0);
+  bwingR.set(false);
+  pidswingl(-30);
+  pidswingl(-20);
+  
+  pidd(-600,-25);
+  pid(-45);
+  pidd(-1500,-45);
+}
+
+void auton() {
+  pidd(-1600,0,50);
+  
+  
+  pidswingl(-91);
+  pidd(-200,-90);
+  wingR.set(true);
+  pidd(1400,-90);
+}
+
+void autonomousprogram() {
+  if(select == 1) {
+    autond1();
+
+  }
+  if(select==2) {
+    auton();
+
+  }
+  if(select==3){
+    autonoffense();
+  }
+}
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
    Comp.autonomous(auton);
