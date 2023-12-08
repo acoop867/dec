@@ -480,7 +480,7 @@ int distin() {
   return 0;
 }
 void intstop() {
-  Intake.stop();
+  Intake.stop(hold);
 }
 competition Comp;
 int select=1;
@@ -603,15 +603,18 @@ void aut2(){
 void autonoffense() {
   intin();
   pidd(80,0);
-  pidd(-1500,0);
-  intstop();
+  pidd(-1600,0);
+  
   pidswingl(-45);
+  intstop();
   bwingR.set(true);
   pidd(-600,-45);
   bwingR.set(false);
   pidswingl(-90);
   pidd(-600,-90);
+  pidd(400,-90);
   pid(90);
+  
   inout();
   pidd(300,90);
 }
@@ -642,7 +645,7 @@ void auton() {
 
 void autonomousprogram() {
   if(select == 1) {
-    autond1();
+    autonoffense();
 
   }
   if(select==2) {
@@ -650,12 +653,12 @@ void autonomousprogram() {
 
   }
   if(select==3){
-    autonoffense();
+    autond1();
   }
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(auton);
+   Comp.autonomous(autonomousprogram);
    Comp.drivercontrol(driver);
 
   pre();
