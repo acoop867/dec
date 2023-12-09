@@ -316,6 +316,20 @@ int catathing(){
   return 0;
 }
 
+void cataauto() {
+  int times=0;
+  cata.spin(forward,12,volt);
+  while(times<44){
+  if(di.objectDistance(inches)<2) {
+      times++;
+      while(di.objectDistance(inches)<2){
+      wait(10,msec);
+      }
+  }
+  }
+  cata.stop();
+}
+
 void driver() {
   thread th(catathing);
   bool n = false;
@@ -494,7 +508,7 @@ void pre() {
     wait(10,msec);
   }
   select++;
-  if(select>3) {
+  if(select>4) {
     select=1;
   }
 
@@ -508,6 +522,9 @@ void pre() {
   }
   if(select == 3) {
     Brain.Screen.print("Offense");
+  }
+  if(select==4) {
+    Brain.Screen.print("skills");
   }
   }
   }
@@ -643,17 +660,61 @@ void auton() {
   pidd(1400,-90);
 }
 
+void skills(){
+  pidd(-700,0);
+  pid(-10);
+  pidd(600,-10);
+  pid(-90);
+  bwingL.set(true);
+  cataauto();
+  bwingL.set(false);
+  pid(-10);
+  pidd(1000,-10);
+  pid(-80);
+  pidd(2500,-80);
+  pid(-110);
+  pidd(-300,-110);
+  pid(-160);
+  pidd(-300,-160);
+  pidd(300,-160);
+  pidd(-300,-60);
+  pidd(200,-160);
+  pid(-90);
+  pidd(1000,-90);
+  pid(45);
+  wingL.set(true);
+  wingR.set(true);
+  pidd(500,45);
+  pidd(-500,45);
+  pidd(500,45);
+  wingL.set(false);
+  wingR.set(false);
+  pid(135);
+  pidd(-600,135);
+  pid(90);
+  wingL.set(true);
+  wingR.set(true);
+  pidd(400,90);
+  pidd(-400,90);
+  pidd(400,90);
+
+}
+
+
 void autonomousprogram() {
   if(select == 1) {
-    autonoffense();
-
+    
+    autond1();
   }
   if(select==2) {
     auton();
 
   }
   if(select==3){
-    autond1();
+    autonoffense();
+  }
+  if(select==4){
+    skills();
   }
 }
 int main() {
