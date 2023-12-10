@@ -352,8 +352,8 @@ void driver() {
       pto.set(false);
     }
     if(Controller1.ButtonDown.pressing()&&Controller1.ButtonLeft.pressing()) {
-      toggle =1;
-      pto.set(true);
+      
+      
       endgame.set(true);
     }
     
@@ -394,9 +394,7 @@ void driver() {
       
       
     }
-    if(Controller1.ButtonDown.pressing()) {
-      Intake.spin(reverse,100,pct);
-    }
+    
     if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()&&inta==false) {
         bwingL.set(!bwingL.value());
         
@@ -513,7 +511,7 @@ void pre() {
     wait(10,msec);
   }
   select++;
-  if(select>4) {
+  if(select>5) {
     select=1;
   }
 
@@ -530,6 +528,9 @@ void pre() {
   }
   if(select==4) {
     Controller1.Screen.print("skills");
+  }
+  if(select==5) {
+    Controller1.Screen.print("skills safe");
   }
   }
   }
@@ -639,6 +640,20 @@ void autonoffense() {
   
   inout();
   pidd(300,90);
+
+  pidd(-400,90);
+  pid(20);
+  intin();
+  pidd(1400,20);
+  intstop();
+  pid(140);
+  pidd(800,140);
+  wingL.set(true);
+  wingR.set(true);
+  pid(190);
+  pidd(800,190);
+
+
 }
 
 void autond1() {
@@ -647,7 +662,7 @@ void autond1() {
   bwingR.set(true);
   pidd(-200,0);
   
-  pidswingl(-20);
+  pidswingl(-15);
   bwingR.set(false);
   pidswingl(-30);
   pidswingl(-20);
@@ -668,8 +683,8 @@ void auton() {
 }
 
 void skills(){
-  pidd(-700,0);
-  pid(-10);
+  pidd(-1000,0);
+  pid(-20);
   pidd(600,-10);
   pid(-90);
   bwingL.set(true);
@@ -707,6 +722,11 @@ void skills(){
 
 }
 
+void skillssafe() {
+  bwingL.set(true);
+  bwingR.set(true);
+  cata.spin(forward,100,pct);
+}
 
 void autonomousprogram() {
   if(select == 1) {
@@ -722,6 +742,9 @@ void autonomousprogram() {
   }
   if(select==4){
     skills();
+  }
+  if(select==5){
+    skillssafe();
   }
 }
 int main() {
