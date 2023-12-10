@@ -394,10 +394,12 @@ void driver() {
       
       
     }
-
+    if(Controller1.ButtonDown.pressing()) {
+      Intake.spin(reverse,100,pct);
+    }
     if(Controller1.ButtonL1.pressing()&&Controller1.ButtonR1.pressing()&&inta==false) {
         bwingL.set(!bwingL.value());
-        bwingR.set(!bwingL.value());
+        
         inta=true;
       }
       else if(!Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()){
@@ -408,6 +410,9 @@ void driver() {
       Intake.spin(forward,100,pct);
     }
     else if(Controller1.ButtonR1.pressing()&&!Controller1.ButtonL1.pressing()&&toggle==0) {
+      Intake.spin(reverse,100,pct);
+    }
+    else if(toggle==1&&Controller1.ButtonDown.pressing()) {
       Intake.spin(reverse,100,pct);
     }
     else{
@@ -502,8 +507,8 @@ void pre() {
   inert.calibrate();
   while(!Comp.isAutonomous()) {
     
-  if(Brain.Screen.pressing()) {
-    while(Brain.Screen.pressing()){
+  if(Controller1.ButtonUp.pressing()) {
+    while(Controller1.ButtonUp.pressing()){
     
     wait(10,msec);
   }
@@ -512,19 +517,19 @@ void pre() {
     select=1;
   }
 
-  Brain.Screen.clearScreen();
-  Brain.Screen.setCursor(1, 1);
+  Controller1.Screen.clearScreen();
+  Controller1.Screen.setCursor(1, 1);
   if(select == 1) {
-    Brain.Screen.print("Defense awp");
+    Controller1.Screen.print("Defense awp");
   }
   if(select == 2) {
-    Brain.Screen.print("Defense Elims");
+    Controller1.Screen.print("Defense Elims");
   }
   if(select == 3) {
-    Brain.Screen.print("Offense");
+    Controller1.Screen.print("Offense");
   }
   if(select==4) {
-    Brain.Screen.print("skills");
+    Controller1.Screen.print("skills");
   }
   }
   }
@@ -641,6 +646,8 @@ void autond1() {
   pidd(400,0);
   bwingR.set(true);
   pidd(-200,0);
+  
+  pidswingl(-20);
   bwingR.set(false);
   pidswingl(-30);
   pidswingl(-20);
