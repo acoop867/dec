@@ -9,6 +9,8 @@ extern motor l3;
 extern motor r1;
 extern motor r2;
 extern motor r3;
+extern triport Expander10;
+extern potV2 potent;
 extern inertial inert;
 extern distance di;
 extern rotation rra;

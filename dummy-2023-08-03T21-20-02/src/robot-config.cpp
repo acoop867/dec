@@ -20,7 +20,8 @@ rotation rra = rotation(PORT17, true);
 controller Controller1 = controller(primary);
 motor Intake = motor(PORT21, ratio18_1, false);
 motor cata = motor(PORT1, ratio18_1, false);
-
+triport Expander10 = triport(PORT10);
+potV2 potent = potV2(Expander10.A);
 digital_out wingR = digital_out(Brain.ThreeWirePort.D);
 digital_out wingL = digital_out(Brain.ThreeWirePort.B);
 digital_out bwingR = digital_out(Brain.ThreeWirePort.F);

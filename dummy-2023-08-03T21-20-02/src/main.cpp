@@ -140,7 +140,9 @@ void pidswingr(int ang) {
     d=p-prev;
 
     //sl(p*kp+d*kd);
-    sr(-p*kp+-d*kd);
+    r1.spin(reverse,p*kp+d*kd,pct);
+    r2.spin(reverse,p*kp+d*kd,pct);
+    r3.spin(forward,p*kp+d*kd,pct);
     //Controller1.Screen.clearScreen();
     //Controller1.Screen.setCursor(1,1);
     //Controller1.Screen.print(inert.rotation());
@@ -158,7 +160,8 @@ void pidswingl(int ang) {
 
   float kp = .6;
   float kd=0.05;
-  while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+  float t=0;
+  while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5&&t<500) {
     float prev = p;
     p=ang-inert.rotation();
     d=p-prev;
@@ -171,6 +174,7 @@ void pidswingl(int ang) {
     //Controller1.Screen.setCursor(1,1);
     //Controller1.Screen.print(inert.rotation());
     wait(10,msec);
+    t+=10;
   }
   pid(ang);
   sl(0);
@@ -501,41 +505,36 @@ void intstop() {
 }
 competition Comp;
 int select=1;
+int psel;
 void pre() {
   inert.calibrate();
+  
   while(!Comp.isAutonomous()) {
     
-  if(Controller1.ButtonUp.pressing()) {
-    while(Controller1.ButtonUp.pressing()){
-    
-    wait(10,msec);
-  }
-  select++;
-  if(select>5) {
-    select=1;
-  }
-
-  Controller1.Screen.clearScreen();
-  Controller1.Screen.setCursor(1, 1);
+  select = round(potent.value(deg)/65);
+  if(!(select==psel)) {
+  Brain.Screen.clearScreen();
+  Brain.Screen.setCursor(1, 1);
+  
   if(select == 1) {
-    Controller1.Screen.print("Defense awp");
+    Brain.Screen.print("Defense awp");
   }
   if(select == 2) {
-    Controller1.Screen.print("Defense Elims");
+    Brain.Screen.print("Defense Elims");
   }
   if(select == 3) {
-    Controller1.Screen.print("Offense");
+    Brain.Screen.print("Offense");
   }
   if(select==4) {
-    Controller1.Screen.print("skills");
+    Brain.Screen.print("skills");
   }
   if(select==5) {
-    Controller1.Screen.print("skills safe");
+    Brain.Screen.print("skills safe");
   }
   }
-  }
+  psel=select;
 }
-
+}
 void db(int degs){
   double ang= inert.rotation();
   l1.resetPosition();
@@ -624,35 +623,30 @@ void aut2(){
 }
 
 void autonoffense() {
-  intin();
-  pidd(80,0);
-  pidd(-1600,0);
-  
-  pidswingl(-45);
-  intstop();
-  bwingR.set(true);
-  pidd(-600,-45);
-  bwingR.set(false);
-  pidswingl(-90);
-  pidd(-600,-90);
-  pidd(400,-90);
-  pid(90);
-  
-  inout();
-  pidd(300,90);
-
-  pidd(-400,90);
-  pid(20);
-  intin();
-  pidd(1400,20);
-  intstop();
-  pid(140);
-  pidd(800,140);
   wingL.set(true);
+  wait(.5,sec);
+  wingL.set(false);
+  pidd(1200,0);
+  pid(-45);
+  intin();
+  pidd(1500,-45);
+  pidd(-300,-45);
+  intstop();
+  pid(90);
   wingR.set(true);
-  pid(190);
-  pidd(800,190);
-
+  wingL.set(true);
+  inout();
+  pidd(1200,90);
+  wingR.set(false);
+  wingL.set(false);
+  pid(0);
+  pidd(-700,90);
+  pid(-135);
+  intin();
+  pidd(800,-135);
+  intstop();
+  pid(-250);
+  pidd(1800,-250);
 
 }
 
@@ -683,49 +677,68 @@ void auton() {
 }
 
 void skills(){
-  pidd(-1000,0);
+  pidswingr(45);
+  pidd(-300,45);
+  pidswingr(80);
+  pidd(-900,90);
+  pidd(700,90);
   pid(-20);
-  pidd(600,-10);
-  pid(-90);
   bwingL.set(true);
-  cataauto();
-  bwingL.set(false);
-  pid(-10);
-  pidd(1000,-10);
-  pid(-80);
-  pidd(2500,-80);
-  pid(-110);
-  pidd(-300,-110);
-  pid(-160);
-  pidd(-300,-160);
-  pidd(300,-160);
-  pidd(-300,-60);
-  pidd(200,-160);
-  pid(-90);
-  pidd(1000,-90);
-  pid(45);
-  wingL.set(true);
-  wingR.set(true);
-  pidd(500,45);
-  pidd(-500,45);
-  pidd(500,45);
-  wingL.set(false);
-  wingR.set(false);
-  pid(135);
-  pidd(-600,135);
-  pid(90);
-  wingL.set(true);
-  wingR.set(true);
-  pidd(400,90);
-  pidd(-400,90);
-  pidd(400,90);
 
+
+  wait(.5,sec);
+  bwingL.set(false);
+  pid(45);
+  pidd(800,45);
+  pid(0);
+  //pidd(3500,0);
 }
 
 void skillssafe() {
   bwingL.set(true);
   bwingR.set(true);
   cata.spin(forward,100,pct);
+}
+
+
+void defenseautoawpsafe() {
+  wingR.set(true);
+  bwingR.set(true);
+  wait(.4,sec);
+  wingR.set(false);
+  wait(.7,sec);
+  pidswingl(-45);
+  pidd(300,-45);
+  pidd(-300,-45);
+  pidd(100,-45);
+  bwingR.set(false);
+  pidd(-300,-45);
+  pidswingl(-90);
+  pidd(-1500,-90);
+}
+
+void defenseautoawp() {
+  wingR.set(true);
+  bwingR.set(true);
+  wait(.4,sec);
+  wingR.set(false);
+  wait(.7,sec);
+  pid(-45);
+  pidd(300,-45);
+  pidd(-300,-45);
+  pidd(100,-45);
+  bwingR.set(false);
+  pidd(-300,-45);
+  pidswingl(-90);
+  pidd(-1500,-90);
+
+  pidd(1100,-90);
+  pid(0);
+  pid(10);
+  pidd(1900,0);
+  pid(90);
+  wingR.set(true);
+  pidd(1500,90);
 }
 
 void autonomousprogram() {
@@ -749,7 +762,7 @@ void autonomousprogram() {
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(autonomousprogram);
+   Comp.autonomous(autonoffense);
    Comp.drivercontrol(driver);
 
   pre();
