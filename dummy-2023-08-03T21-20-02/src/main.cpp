@@ -181,6 +181,37 @@ void pidswingl(int ang) {
   sr(0);
 }
 
+void pidswingl2(int ang) {
+  float p = ang;
+  float i = 0;
+  float d = ang;
+
+  float kp = .6;
+  float kd=0.05;
+  float t=0;
+  while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5&&t<500) {
+    float prev = p;
+    p=ang-inert.rotation();
+    d=p-prev;
+    float inp=p*kp+d*kd;
+    if(inp>50) {
+      inp=50;
+    }
+    l1.spin(reverse,inp,pct);
+    l2.spin(forward,inp,pct);
+    l3.spin(forward,inp,pct);
+    //sr(-p*kp+-d*kd);
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(inert.rotation());
+    wait(10,msec);
+    t+=10;
+  }
+  pid(ang);
+  sl(0);
+  sr(0);
+}
+
 void pidd(int dist, int ang) {
   l1.resetPosition();
   l2.resetPosition();
@@ -554,75 +585,9 @@ void db(int degs){
   sr(0);
 }
 
-void auton1() {
-  pidd(-1400,0);
-  pidswingl(-50);
-  pidd(-500,-45);
-  pidswingl(-90);
-  
-  pid(90);
-  pidd(400,90);
-  pidd(-500,90);
-  pid(25);
-  pidd(2200,25);
-  pidd(-300,25);
-  pid(160);
-  pid(65);
-  pidd(1100,65);
-  pid(180);
-  pidd(1500,180);
-}
 
-void auton2() {
-  pidswingl(35);
-  pidd(1950,35);
-  pidswingr(90);
-  pidd(800,90);
-  pidswingl(45);
-  pidd(-1800,45);
-  pidswingl(-45);
-  pidd(-300,-45);
-  pidswingl(-90);
-  pidswingl(-45);
-  pidd(800,-45);
-  pidswingl(0);
-  pidd(400,0);
-  pidswingl(-80);
-  pidd(-1600,-80);
-}
 
-void auton4() {
-  pidswingr(160);
-  wait(.5,sec);
-  pid(15);
-  pidd(700,10);
-  pid(0);
-  pidd(3000,0);
-}
-
-void aut2(){
-  pidd(1500,0);
-  pid(90);
-  inout();
-  
-  pid(-90);
-  intin();
-  pidd(1000,-90);
-  intstop();
-  pid(80);
-  inout();
-  pidd(1000,80);
-  intstop();
-  pidd(-1000,80);
-  pid(-30);
-  intin();
-  pidd(500,-30);
-  wingR.set(true);
-  wingL.set(true);
-  pid(90);
-}
-
-void autonoffense() {
+void autonoffense2() {
   wingL.set(true);
   wait(.5,sec);
   wingL.set(false);
@@ -639,15 +604,54 @@ void autonoffense() {
   pidd(1200,90);
   wingR.set(false);
   wingL.set(false);
+  pidd(-400,90);
   pid(0);
   pidd(-700,90);
-  pid(-135);
+  pid(-100);
   intin();
-  pidd(800,-135);
+  pidd(800,-90);
   intstop();
-  pid(-250);
+  
+  pid(-230);
   pidd(1800,-250);
+  pid(-300);
+  intout();
+  pid(-450);
+  
+  pidd(-500,-450);
+  bwingR.set(true);
+  pid(-540);
+  bwingR.set(false);
+  pidd(-1000,-540);
+}
 
+void autonoffense() {
+  intin();
+  pidd(200,0);
+  pidd(-1500,0);
+  pidswingl(-45);
+  bwingR.set(true);
+  pidd(-800,-45);
+  pid(-90);
+  bwingR.set(false);
+  pid(90);
+  wingL.set(true);
+  inout();
+  pidd(600,90);
+  wingL.set(false);
+  pidd(-400,90);
+  intstop();
+  pid(15);
+  intin();
+  pidd(2100,15);
+  intstop();
+  pidd(-200,10);
+  pid(90);
+  pidd(600,90);
+  wingR.set(true);
+  pidswingl(180);
+  inout();
+  pidd(900,180);
 }
 
 void autond1() {
@@ -704,50 +708,49 @@ void skillssafe() {
 void defenseautoawpsafe() {
   wingR.set(true);
   bwingR.set(true);
-  wait(.4,sec);
+  wait(.1,sec);
   wingR.set(false);
-  wait(.7,sec);
-  pidswingl(-45);
-  pidd(300,-45);
-  pidd(-300,-45);
+  wait(.3,sec);
+  pid(-45);
+  //pidd(300,-45);
+  //pidd(-300,-45);
   pidd(100,-45);
   bwingR.set(false);
-  pidd(-300,-45);
-  pidswingl(-90);
-  pidd(-1500,-90);
+  pidd(-400,-45);
+  pidswingl(-85);
+  pidd(-1600,-90);
+  pidd(80,-90);
 }
 
 void defenseautoawp() {
+  intin();
+  pidd(2100,0);
+  pidd(-300,0);
+  intstop();
+  pid(84);
   wingR.set(true);
-  bwingR.set(true);
-  wait(.4,sec);
+  pidd(1100,80);
+  pidd(-200,80);
   wingR.set(false);
-  wait(.7,sec);
-  pid(-45);
-  pidd(300,-45);
-  pidd(-300,-45);
-  pidd(100,-45);
-  bwingR.set(false);
-  pidd(-300,-45);
-  pidswingl(-90);
-  pidd(-1500,-90);
-
-  pidd(1100,-90);
-  pid(0);
-  pid(10);
-  pidd(1900,0);
+  pidswingl(30);
+  pidd(-1800,45);
+  pid(150);
+  pidd(700,135);
   pid(90);
-  wingR.set(true);
-  pidd(1500,90);
+  inout();
+  pidd(800,90);
+  pidd(-1200,90);
+  pto.set(true);
+
 }
 
 void autonomousprogram() {
   if(select == 1) {
     
-    autond1();
+    defenseautoawpsafe();
   }
   if(select==2) {
-    auton();
+    defenseautoawp();
 
   }
   if(select==3){
