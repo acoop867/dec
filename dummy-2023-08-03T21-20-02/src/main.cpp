@@ -588,41 +588,26 @@ void db(int degs){
 
 
 void autonoffense2() {
-  wingL.set(true);
-  wait(.5,sec);
-  wingL.set(false);
-  pidd(1200,0);
-  pid(-45);
-  intin();
-  pidd(1500,-45);
-  pidd(-300,-45);
-  intstop();
+    intin();
+  pidd(200,0);
+  pidd(-1500,0);
+  pidswingl(-45);
+  bwingR.set(true);
+  pidd(-800,-45);
+  pid(-90);
+  bwingR.set(false);
   pid(90);
-  wingR.set(true);
   wingL.set(true);
   inout();
-  pidd(1200,90);
-  wingR.set(false);
+  pidd(600,90);
   wingL.set(false);
-  pidd(-400,90);
-  pid(0);
-  pidd(-700,90);
-  pid(-100);
-  intin();
-  pidd(800,-90);
+  pidd(-800,90);
   intstop();
-  
-  pid(-230);
-  pidd(1800,-250);
-  pid(-300);
-  intout();
-  pid(-450);
-  
-  pidd(-500,-450);
-  bwingR.set(true);
-  pid(-540);
-  bwingR.set(false);
-  pidd(-1000,-540);
+  pid(160);
+  pidd(-700,160);
+  pid(180);
+  pidd(-1400,180);
+
 }
 
 void autonoffense() {
@@ -765,7 +750,7 @@ void autonomousprogram() {
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(autonoffense);
+   Comp.autonomous(autonoffense2);
    Comp.drivercontrol(driver);
 
   pre();
