@@ -376,15 +376,18 @@ void driver() {
   bool rr = false;
   bool lr = false;
   bool inta = false;
+  bool inta2 = false;
   int toggle = 0;
   while(true) {
     if(Controller1.ButtonX.pressing()) {
       toggle =1;
       pto.set(true);
+      bwingL.set(true);
     }
     if(Controller1.ButtonB.pressing()) {
       toggle =0;
       pto.set(false);
+      bwingL.set(false);
     }
     if(Controller1.ButtonDown.pressing()&&Controller1.ButtonLeft.pressing()) {
       
@@ -439,6 +442,14 @@ void driver() {
         inta=false;
       }
     
+    if(Controller1.ButtonUp.pressing()&&inta2==false) {
+      bwingR.set(!bwingR.value());
+      inta2=true;
+    }
+    else{
+      inta2=false;
+    }
+    
     if(Controller1.ButtonL1.pressing()&&!Controller1.ButtonR1.pressing()&&toggle==0) {
       Intake.spin(forward,100,pct);
     }
@@ -479,6 +490,11 @@ void driver() {
       wingL.set(t);
       wingR.set(t);
       m=true;
+      if(toggle==1) {
+        toggle=0;
+        bwingL.set(false);
+        pto.set(false);
+      }
     }
     if(!Controller1.ButtonR2.pressing()) {
       m=false;
@@ -691,10 +707,12 @@ void skillssafe() {
 
 
 void defenseautoawpsafe() {
+  Intake.spin(forward,100,pct);
   wingR.set(true);
   bwingR.set(true);
   wait(.1,sec);
   wingR.set(false);
+  intstop();
   wait(.3,sec);
   pid(-45);
   //pidd(300,-45);
@@ -707,12 +725,12 @@ void defenseautoawpsafe() {
   pidd(80,-90);
 }
 
-void defenseautoawp() {
+void defenseautoelim() {
   intin();
   pidd(2100,0);
   pidd(-300,0);
   intstop();
-  pid(84);
+  pid(78);
   wingR.set(true);
   pidd(1100,80);
   pidd(-200,80);
@@ -720,13 +738,13 @@ void defenseautoawp() {
   pidswingl(30);
   pidd(-1800,45);
   pid(150);
-  pidd(700,135);
-  pid(90);
+  pidd(800,135);
+  pid(80);
   inout();
-  pidd(800,90);
-  pidd(-1200,90);
+  pidd(1100,90);
+  pidd(-2000,90);
   pto.set(true);
-
+  bwingL.set(true);
 }
 
 void autonomousprogram() {
@@ -735,7 +753,7 @@ void autonomousprogram() {
     defenseautoawpsafe();
   }
   if(select==2) {
-    defenseautoawp();
+    defenseautoelim();
 
   }
   if(select==3){
@@ -750,7 +768,7 @@ void autonomousprogram() {
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(autonoffense2);
+   Comp.autonomous(defenseautoelim);
    Comp.drivercontrol(driver);
 
   pre();
