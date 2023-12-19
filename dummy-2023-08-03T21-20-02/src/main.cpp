@@ -681,7 +681,28 @@ void auton() {
   pidd(1400,-90);
 }
 
-void skills(){
+void skills() {
+  pidd(-400,0);
+  pidswingl(-45);
+  pidd(-600,-45);
+  pid(-45);
+  pidd(600,-45);
+  pid(60);
+  bwingR.set(true);
+  wait(1,sec);//cataauto();
+  bwingR.set(false);
+  pid(0);
+  pidd(600,0);
+  pid(45);
+  pidd(3500,45);
+  pidswingl(90);
+  pidd(800,90);
+  pidswingl(135);
+  wingR.set(true);
+  pidd(600,135);
+}
+
+void skills1(){
   pidswingr(45);
   pidd(-300,45);
   pidswingr(80);
@@ -768,7 +789,7 @@ void autonomousprogram() {
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(defenseautoelim);
+   Comp.autonomous(skills);
    Comp.drivercontrol(driver);
 
   pre();
