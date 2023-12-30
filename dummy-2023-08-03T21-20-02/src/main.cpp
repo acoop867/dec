@@ -626,7 +626,7 @@ void autonoffense2() {
 
 }
 
-void autonoffense() {
+void autonoffense3() {
   intin();
   pidd(200,0);
   pidd(-1500,0);
@@ -653,6 +653,43 @@ void autonoffense() {
   pidswingl(180);
   inout();
   pidd(900,180);
+}
+
+int wingin() {
+  wait(.4,sec);
+  wingL.set(false);
+  wingR.set(false);
+  return 0;
+}
+
+void autonoffense() {
+  wingL.set(true);
+  intin();
+  thread t (wingin);
+  pidd(3000,0);
+  intstop();
+  pid(135);
+
+  inout();
+  pidd(1300,135);
+  
+  pidd(-300,135);
+  intstop();
+  pid(-90);
+  intin();
+  pidd(1200,-70);
+  intstop();
+  pid(-200);
+  pidd(1700,-200);
+  pidswingl(-90);
+  bwingR.set(true);
+  pid(-135);
+  bwingR.set(false);
+  pid(-315);
+  inout();
+  pid(135);
+  pidd(-1000,135);
+
 }
 
 void autond1() {
@@ -789,7 +826,7 @@ void autonomousprogram() {
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(skills);
+   Comp.autonomous(autonoffense);
    Comp.drivercontrol(driver);
 
   pre();
