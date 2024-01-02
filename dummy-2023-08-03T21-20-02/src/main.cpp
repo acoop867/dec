@@ -719,24 +719,32 @@ void auton() {
 }
 
 void skills() {
-  pidd(-400,0);
-  pidswingl(-45);
-  pidd(-600,-45);
-  pid(-45);
-  pidd(600,-45);
-  pid(60);
-  bwingR.set(true);
-  wait(1,sec);//cataauto();
-  bwingR.set(false);
+  pidswingr(45);
+  pidd(-400,45);
+  pidswingl(-20);
+  pidd(1600,-20);
+  pid(-90);
+  pidd(1700,-90);
   pid(0);
-  pidd(600,0);
-  pid(45);
-  pidd(3500,45);
-  pidswingl(90);
-  pidd(800,90);
-  pidswingl(135);
-  wingR.set(true);
-  pidd(600,135);
+  pidd(2000,0);
+
+  pidd(2000,0);
+
+  pidswingl(-50);
+  pidd(-1300,-50);
+  pid(0);
+
+  pidd(800,0);
+  
+  pidd(-400,0);
+  pid(180);
+  pidd(2800,180);
+  pid(135);
+  pidd(2500,135);
+  pid(0);
+  pidd(-700,0);
+  pid(-20);
+  pidd(1800,-20);
 }
 
 void skills1(){
@@ -785,6 +793,8 @@ void defenseautoawpsafe() {
 
 void defenseautoelim() {
   intin();
+  wingR.set(true);
+  thread t(wingin);
   pidd(2100,0);
   pidd(-300,0);
   intstop();
@@ -795,6 +805,9 @@ void defenseautoelim() {
   wingR.set(false);
   pidswingl(30);
   pidd(-1800,45);
+
+  
+
   pid(150);
   pidd(800,135);
   pid(80);
@@ -803,6 +816,31 @@ void defenseautoelim() {
   pidd(-2000,90);
   pto.set(true);
   bwingL.set(true);
+}
+
+void defenseautounsafe() {
+  intin();
+  wingR.set(true);
+  thread t(wingin);
+  pidd(2100,0);
+  pidd(-300,0);
+  intstop();
+  pid(78);
+  wingR.set(true);
+  pidd(1100,80);
+  pidd(-200,80);
+  wingR.set(false);
+  pidswingl(30);
+  pidd(-2200,30);
+
+  pidswingl(-60);
+  bwingR.set(true);
+  pidd(-600,-60);
+  pid(-110);
+  bwingR.set(false);
+  pidd(-1500,-110);
+
+  
 }
 
 void autonomousprogram() {
@@ -826,7 +864,7 @@ void autonomousprogram() {
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(autonoffense);
+   Comp.autonomous(defenseautounsafe);
    Comp.drivercontrol(driver);
 
   pre();
