@@ -121,6 +121,43 @@ void pid(int ang) {
   sr(0);
 }
 
+void pid(int ang,int timeout) {
+  float p = ang-inert.rotation();
+  float i = 0.000001;
+  float d = ang;
+  float kp;
+  if(fabs(p)<91){
+  kp = .299;
+  }
+  else{
+  kp = 0.29;
+  }
+  float kd=.17;
+  int t=0;
+  while((fabs(d)>.3||fabs(p)>5)&&fabs(p)>.5&&t<timeout) {
+    t+=10;
+    float prev = p;
+    p=ang-inert.rotation();
+    d=p-prev;
+
+    l1.spin(reverse,p*kp+d*kd,pct);
+    l2.spin(forward,p*kp+d*kd,pct);
+    l3.spin(forward,p*kp+d*kd,pct);
+    r1.spin(reverse,p*kp+d*kd,pct);
+    r2.spin(reverse,p*kp+d*kd,pct);
+    r3.spin(forward,p*kp+d*kd,pct);
+
+    //sl(p*kp+d*kd);
+    //sr(-p*kp+-d*kd);
+    //Controller1.Screen.clearScreen();
+    //Controller1.Screen.setCursor(1,1);
+    //Controller1.Screen.print(inert.rotation());
+    wait(10,msec);
+  }
+  sl(0);
+  sr(0);
+}
+
 void intout() {
   Intake.spin(reverse,100,pct);
   wait(1,sec);
@@ -247,7 +284,7 @@ while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
   sr(0);
 }
 
-void pidd(int dist, int ang,int max) {
+void pidd(int dist, int ang,int timeout) {
   l1.resetPosition();
   l2.resetPosition();
   l3.resetPosition();
@@ -263,20 +300,15 @@ float p = dist;
 float d=dist;
 
 double kap = .03;
-
-while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5) {
+double t =0;
+while((fabs(d)>.3||fabs(p)>40)&&fabs(p)>.5&&t<timeout) {
     float prev = p;
     p=dist-(li()+ri())/2;
     d=p-prev;
-
+    t+=10;
     float ap = ang-inert.rotation();
     int pow = p*kp+d*kd;
-    if(pow>max) {
-      pow=max;
-    }
-    if(pow<-max) {
-      pow = -max;
-    }
+    
     sl(pow+ap*kap);
     sr(pow-ap*kap);
     //Controller1.Screen.clearScreen();
@@ -666,29 +698,34 @@ void autonoffense() {
   wingL.set(true);
   intin();
   thread t (wingin);
-  pidd(3000,0);
-  intstop();
-  pid(135);
-
-  inout();
-  pidd(1300,135);
+  pidd(2900,0,1400);
   
-  pidd(-300,135);
   intstop();
-  pid(-90);
+  
+  pid(135,670);
+  
+  inout();
+  
+  pidd(1300,135,1100);
+  
+  pidd(-300,135,500);
+  
+  intstop();
+  pid(-120,800);
   intin();
-  pidd(1200,-70);
+  pidd(1200,-70,1050);
   intstop();
-  pid(-200);
-  pidd(1700,-200);
+  pid(-190,600);
+  pidd(2300,-190,1300);
   pidswingl(-90);
   bwingR.set(true);
-  pid(-135);
+  pid(-135,500);
   bwingR.set(false);
-  pid(-315);
+  pid(-300);
   inout();
-  pid(135);
-  pidd(-1000,135);
+  wait(.4,sec);
+  pid(-135);
+  pidd(-1000,-135);
 
 }
 
@@ -864,7 +901,7 @@ void autonomousprogram() {
 }
 int main() {
   // Initializing Robot Configuration. DO NOT REMOVE!
-   Comp.autonomous(defenseautounsafe);
+   Comp.autonomous(autonoffense);
    Comp.drivercontrol(driver);
 
   pre();
