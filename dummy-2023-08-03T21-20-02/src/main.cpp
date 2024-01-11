@@ -711,12 +711,12 @@ void autonoffense() {
   pidd(-300,135,500);
   
   intstop();
-  pid(-120,800);
+  pid(-110,800);
   intin();
-  pidd(1200,-70,1050);
+  pidd(1300,-70,1050);
   intstop();
-  pid(-190,600);
-  pidd(2300,-190,1300);
+  pid(-195,600);
+  pidd(2100,-190,1300);
   pidswingl(-90);
   bwingR.set(true);
   pid(-135,500);
@@ -724,7 +724,8 @@ void autonoffense() {
   pid(-300);
   inout();
   wait(.4,sec);
-  pid(-135);
+  pid(-120);
+  bwingR.set(true);
   pidd(-1000,-135);
 
 }
@@ -859,7 +860,7 @@ void defenseautounsafe() {
   intin();
   wingR.set(true);
   thread t(wingin);
-  pidd(2100,0);
+  pidd(2200,0);
   pidd(-300,0);
   intstop();
   pid(78);
@@ -873,7 +874,7 @@ void defenseautounsafe() {
   pidswingl(-60);
   bwingR.set(true);
   pidd(-600,-60);
-  pid(-110);
+  pid(-100);
   bwingR.set(false);
   pidd(-1500,-110);
 
